@@ -4,13 +4,14 @@ import { join } from 'path';
 
 import { AuthorizedModule } from './modules/authorized/authorized.module';
 import { UnauthorizedModule } from './modules/unauthorized/unauthorized.module';
-import { AppController } from './app.controller';
-import { AuthModule } from './auth/auth.module';
-import { UsersService } from './users/users.service';
+import { AuthModule } from './services/auth/auth.module';
+import { ServicesModule } from 'services/services.module';
+import { CustomerController } from 'controllers/customer.controller';
+import { AuthController } from 'controllers/auth.controller';
 
 @Module({
-  controllers: [AppController],
-  providers: [UsersService],
+  controllers: [AuthController, CustomerController],
+  providers: [],
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
@@ -18,6 +19,7 @@ import { UsersService } from './users/users.service';
     AuthorizedModule,
     UnauthorizedModule,
     AuthModule,
+    ServicesModule,
   ],
 })
 export class AppModule {}
