@@ -8,24 +8,24 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import {
-  CustomerListFilters,
-  UserService,
-} from '../services/users/users.service';
 import { Request } from 'express';
+import { JwtAuthGuard } from 'services/auth/jwt-auth.guard';
+import { UserService } from '../services/users/users.service';
 
 @Controller('customers')
 export class CustomerController {
   constructor(private customerService: UserService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async index(@Req() request: Request) {
     return this.customerService.list({ ...request.query });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async get(@Param('id') id: string) {
     return this.customerService.getById(parseInt(id));
@@ -37,6 +37,7 @@ export class CustomerController {
     return this.customerService.create(customer);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   public async update(
     @Param('id') id: string,
@@ -45,6 +46,7 @@ export class CustomerController {
     return this.customerService.update({ id: parseInt(id), data });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   public async delete(@Param('id') id: string) {
     return this.customerService.delete(parseInt(id));

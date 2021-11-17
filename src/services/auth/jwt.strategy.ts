@@ -15,6 +15,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    const tokenExpired = Date.now() > payload.exp * 1000;
+
+    return !tokenExpired;
   }
 }
