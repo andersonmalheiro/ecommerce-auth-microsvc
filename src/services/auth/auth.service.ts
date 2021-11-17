@@ -4,27 +4,31 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CustomerAuth } from '@prisma/client';
 import { IRegisterCustomerDTO } from 'dto/register-customer.dto';
 import { Prisma } from '.prisma/client';
-import { hash, genSalt } from 'bcrypt';
+import { hash, genSalt, compareSync } from 'bcrypt';
 import { UpdatePasswordDTO } from 'dto/update-password.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService, private prisma: PrismaService) {}
 
-  private sessions: Record<number, string> = {};
+  private saltRounds = 10;
 
   public async login(data: Pick<CustomerAuth, 'email' | 'password'>) {
-    console.log(data);
-    const res = await this.prisma.customerAuth.findFirst({
+    const { email, password } = data;
+
+    const res = await this.prisma.customerAuth.findUnique({
       where: {
-        email: data.email,
-        password: data.password,
+        email,
       },
     });
 
-    console.log(res);
-
     if (res) {
+      const validPass = compareSync(password, res.password);
+
+      if (!validPass) {
+        throw new Error('Wrong password');
+      }
+
       const user = await this.prisma.customer.findUnique({
         where: {
           id: res.id,
@@ -33,19 +37,20 @@ export class AuthService {
 
       const token = this.jwtService.sign(user);
 
-      this.sessions[user.id] = token;
-
       return {
         access_token: token,
       };
+    } else {
+      throw new Error(`Invalid email`);
     }
+
+    return null;
   }
 
   public async register(data: IRegisterCustomerDTO) {
     const { email, name, password } = data;
 
-    const saltRounds = 10;
-    const salt = await genSalt(saltRounds);
+    const salt = await genSalt(this.saltRounds);
     const hashedPass = await hash(password, salt);
 
     const payload: Prisma.CustomerCreateInput = {
@@ -64,9 +69,10 @@ export class AuthService {
   public async updatePassword(data: UpdatePasswordDTO) {
     const { email, password } = data;
 
-    const saltRounds = 10;
-    const salt = await genSalt(saltRounds);
+    const salt = await genSalt(this.saltRounds);
     const hashedPass = await hash(password, salt);
+
+    console.log(hashedPass);
 
     const payload: Prisma.CustomerAuthUpdateInput = {
       password: hashedPass,

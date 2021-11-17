@@ -1,25 +1,41 @@
-import { Controller, Post, Body, Param, Patch } from '@nestjs/common';
-import { AuthService } from '../services/auth/auth.service';
 import { Prisma } from '.prisma/client';
+import { Body, Controller, HttpStatus, Patch, Post, Res } from '@nestjs/common';
 import { IRegisterCustomerDTO } from 'dto/register-customer.dto';
 import { UpdatePasswordDTO } from 'dto/update-password.dto';
+import { Response } from 'express';
+import { AuthService } from '../services/auth/auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  async login(@Body() data: Prisma.CustomerAuthCreateInput) {
-    return this.authService.login(data);
+  public async login(
+    @Body() data: Prisma.CustomerAuthCreateInput,
+    @Res() response: Response,
+  ) {
+    try {
+      const token = await this.authService.login(data);
+
+      if (token) {
+        return response.status(HttpStatus.OK).send(token);
+      }
+    } catch (error) {
+      console.log(error);
+
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        msg: error.message,
+      });
+    }
   }
 
   @Post('register')
-  async register(@Body() data: IRegisterCustomerDTO) {
+  public async register(@Body() data: IRegisterCustomerDTO) {
     return this.authService.register(data);
   }
 
   @Patch('update_password')
-  async updatePassword(@Body() data: UpdatePasswordDTO) {
+  public async updatePassword(@Body() data: UpdatePasswordDTO) {
     return this.authService.updatePassword(data);
   }
 }
