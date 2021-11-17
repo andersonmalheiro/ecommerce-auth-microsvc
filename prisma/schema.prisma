@@ -22,7 +22,7 @@ model CustomerAuth {
   user     Customer? @relation(fields: [userId], references: [id])
   userId   Int
   email    String    @unique
-  password String    @db.VarChar(8)
+  password String    @db.VarChar(255)
 }
 
 model Product {
