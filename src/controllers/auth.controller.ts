@@ -30,8 +30,23 @@ export class AuthController {
   }
 
   @Post('register')
-  public async register(@Body() data: IRegisterCustomerDTO) {
-    return this.authService.register(data);
+  public async register(
+    @Body() data: IRegisterCustomerDTO,
+    @Res() response: Response,
+  ) {
+    try {
+      const res = await this.authService.register(data);
+      return response.status(HttpStatus.CREATED).send(res);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // The .code property can be accessed in a type-safe manner
+        if (error.code === 'P2002') {
+          return response.status(HttpStatus.BAD_REQUEST).send({
+            msg: 'Email already in use',
+          });
+        }
+      }
+    }
   }
 
   @Patch('update_password')
