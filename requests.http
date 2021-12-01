@@ -1,12 +1,12 @@
 ### List users
-GET http://localhost:8080/customers
+GET http://localhost:8080/users
     ?take=1&skip=1
 
 ### Get user by ID
-GET http://localhost:8080/customers/1
+GET http://localhost:8080/users/1
 
 ### Update user
-PATCH http://localhost:8080/customers/2
+PATCH http://localhost:8080/users/2
 content-type: application/json
 
 {

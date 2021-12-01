@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
-import { CustomerAuth } from '@prisma/client';
-import { IRegisterCustomerDTO } from 'dto/register-customer.dto';
+import { UserAuth } from '@prisma/client';
+import { IRegisterUserDTO } from 'dto/register-user.dto';
 import { Prisma } from '.prisma/client';
 import { hash, genSalt, compareSync } from 'bcrypt';
 import { UpdatePasswordDTO } from 'dto/update-password.dto';
@@ -13,10 +13,10 @@ export class AuthService {
 
   private saltRounds = 10;
 
-  public async login(data: Pick<CustomerAuth, 'email' | 'password'>) {
+  public async login(data: Pick<UserAuth, 'email' | 'password'>) {
     const { email, password } = data;
 
-    const res = await this.prisma.customerAuth.findUnique({
+    const res = await this.prisma.userAuth.findUnique({
       where: {
         email,
       },
@@ -29,7 +29,7 @@ export class AuthService {
         throw new Error('Wrong password');
       }
 
-      const user = await this.prisma.customer.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: {
           id: res.id,
         },
@@ -47,13 +47,13 @@ export class AuthService {
     return null;
   }
 
-  public async register(data: IRegisterCustomerDTO) {
+  public async register(data: IRegisterUserDTO) {
     const { email, name, password } = data;
 
     const salt = await genSalt(this.saltRounds);
     const hashedPass = await hash(password, salt);
 
-    const payload: Prisma.CustomerCreateInput = {
+    const payload: Prisma.UserCreateInput = {
       name,
       auth: {
         create: {
@@ -63,7 +63,7 @@ export class AuthService {
       },
     };
 
-    return this.prisma.customer.create({ data: payload });
+    return this.prisma.user.create({ data: payload });
   }
 
   public async updatePassword(data: UpdatePasswordDTO) {
@@ -74,11 +74,11 @@ export class AuthService {
 
     console.log(hashedPass);
 
-    const payload: Prisma.CustomerAuthUpdateInput = {
+    const payload: Prisma.UserAuthUpdateInput = {
       password: hashedPass,
     };
 
-    await this.prisma.customerAuth.update({
+    await this.prisma.userAuth.update({
       where: {
         email,
       },

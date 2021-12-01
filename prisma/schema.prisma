@@ -10,33 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customer {
+model User {
   id        Int            @id @default(autoincrement())
   createdAt DateTime       @default(now())
   name      String?
-  auth      CustomerAuth[]
+  auth      UserAuth[]
 }
 
-model CustomerAuth {
+model UserAuth {
   id       Int       @id @default(autoincrement())
-  user     Customer? @relation(fields: [userId], references: [id])
+  user     User? @relation(fields: [userId], references: [id])
   userId   Int
   email    String    @unique
   password String    @db.VarChar(255)
-}
-
-model Product {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  name        String
-  description String
-  price       Float
-  Order       Order?   @relation(fields: [orderId], references: [id])
-  orderId     Int?
-}
-
-model Order {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  products  Product[]
 }

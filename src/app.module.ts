@@ -6,11 +6,11 @@ import { AuthorizedModule } from './modules/authorized/authorized.module';
 import { UnauthorizedModule } from './modules/unauthorized/unauthorized.module';
 import { AuthModule } from './services/auth/auth.module';
 import { ServicesModule } from 'services/services.module';
-import { CustomerController } from 'controllers/customer.controller';
+import { UserController } from 'controllers/user.controller';
 import { AuthController } from 'controllers/auth.controller';
 
 @Module({
-  controllers: [AuthController, CustomerController],
+  controllers: [AuthController, UserController],
   providers: [],
   imports: [
     ServeStaticModule.forRoot({

@@ -1,37 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, Customer } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
-export interface CustomerListFilters {
+export interface UserListFilters {
   skip?: number;
   take?: number;
-  cursor?: Prisma.CustomerWhereUniqueInput;
-  where?: Prisma.CustomerWhereInput;
-  orderBy?: keyof Customer;
+  cursor?: Prisma.UserWhereUniqueInput;
+  where?: Prisma.UserWhereInput;
+  orderBy?: keyof User;
   sortOrder?: Prisma.SortOrder;
 }
 
-type CustomerOrderBy =
-  Prisma.Enumerable<Prisma.CustomerOrderByWithRelationInput>;
+type UserOrderBy = Prisma.Enumerable<Prisma.UserOrderByWithRelationInput>;
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  public async getById(id: number): Promise<Customer | null> {
-    return this.prisma.customer.findUnique({
+  public async getById(id: number): Promise<User | null> {
+    return this.prisma.user.findUnique({
       where: {
         id: id,
       },
     });
   }
 
-  public async list(params: CustomerListFilters): Promise<Customer[]> {
+  public async list(params: UserListFilters): Promise<User[]> {
     const { orderBy, sortOrder, ...rest } = params;
 
-    const orderByConfig: CustomerOrderBy = {};
+    const orderByConfig: UserOrderBy = {};
 
-    const filters: Prisma.CustomerFindManyArgs = {};
+    const filters: Prisma.UserFindManyArgs = {};
 
     Object.entries(rest).map(([key, value]) => {
       if (value) {
@@ -47,25 +46,25 @@ export class UserService {
       orderByConfig[orderBy] = sortOrder;
     }
 
-    return this.prisma.customer.findMany({
+    return this.prisma.user.findMany({
       ...filters,
       orderBy: orderByConfig,
     });
   }
 
-  public async create(data: Prisma.CustomerCreateInput): Promise<Customer> {
-    return this.prisma.customer.create({
+  public async create(data: Prisma.UserCreateInput): Promise<User> {
+    return this.prisma.user.create({
       data,
     });
   }
 
   public async update(params: {
     id: number;
-    data: Prisma.CustomerUpdateInput;
-  }): Promise<Customer> {
+    data: Prisma.UserUpdateInput;
+  }): Promise<User> {
     const { id, data } = params;
 
-    return this.prisma.customer.update({
+    return this.prisma.user.update({
       data,
       where: {
         id: id,
@@ -73,8 +72,8 @@ export class UserService {
     });
   }
 
-  public async delete(id: number): Promise<Customer> {
-    return this.prisma.customer.delete({
+  public async delete(id: number): Promise<User> {
+    return this.prisma.user.delete({
       where: {
         id: id,
       },

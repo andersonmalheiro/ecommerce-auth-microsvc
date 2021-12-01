@@ -1,6 +1,6 @@
 import { Prisma } from '.prisma/client';
 import { Body, Controller, HttpStatus, Patch, Post, Res } from '@nestjs/common';
-import { IRegisterCustomerDTO } from 'dto/register-customer.dto';
+import { IRegisterUserDTO } from 'dto/register-user.dto';
 import { UpdatePasswordDTO } from 'dto/update-password.dto';
 import { Response } from 'express';
 import { AuthService } from '../services/auth/auth.service';
@@ -11,7 +11,7 @@ export class AuthController {
 
   @Post('login')
   public async login(
-    @Body() data: Prisma.CustomerAuthCreateInput,
+    @Body() data: Prisma.UserAuthCreateInput,
     @Res() response: Response,
   ) {
     try {
@@ -31,7 +31,7 @@ export class AuthController {
 
   @Post('register')
   public async register(
-    @Body() data: IRegisterCustomerDTO,
+    @Body() data: IRegisterUserDTO,
     @Res() response: Response,
   ) {
     try {

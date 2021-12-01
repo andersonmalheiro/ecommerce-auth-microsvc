@@ -15,40 +15,40 @@ import { Request } from 'express';
 import { JwtAuthGuard } from 'services/auth/jwt-auth.guard';
 import { UserService } from '../services/users/users.service';
 
-@Controller('customers')
-export class CustomerController {
-  constructor(private customerService: UserService) {}
+@Controller('users')
+export class UserController {
+  constructor(private userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async index(@Req() request: Request) {
-    return this.customerService.list({ ...request.query });
+    return this.userService.list({ ...request.query });
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async get(@Param('id') id: string) {
-    return this.customerService.getById(parseInt(id));
+    return this.userService.getById(parseInt(id));
   }
 
   @Post()
   @HttpCode(201)
-  public async create(@Body() customer: Prisma.CustomerCreateInput) {
-    return this.customerService.create(customer);
+  public async create(@Body() user: Prisma.UserCreateInput) {
+    return this.userService.create(user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   public async update(
     @Param('id') id: string,
-    @Body() data: Prisma.CustomerUpdateInput,
+    @Body() data: Prisma.UserUpdateInput,
   ) {
-    return this.customerService.update({ id: parseInt(id), data });
+    return this.userService.update({ id: parseInt(id), data });
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   public async delete(@Param('id') id: string) {
-    return this.customerService.delete(parseInt(id));
+    return this.userService.delete(parseInt(id));
   }
 }
