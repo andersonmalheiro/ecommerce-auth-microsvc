@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASS}"
+    ports:
+      - 5432:5432
+    volumes:
+      - /var/lib/postgresql/data
+
+  server:
+    image: server
+    build:
+      context: server
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: "production"
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=${DB_SCHEMA}"
+    ports:
+      - 8080:8080
+    depends_on:
+      - database

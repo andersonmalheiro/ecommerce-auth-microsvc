@@ -1,36 +1,62 @@
-Static files are served out of the public directory.
+# Ecommerce Authentication Microservice
 
-```
-$ curl http://localhost:8080/placeholder.txt
-$ # result -> Put your static files in this directory and then delete this file.
-```
+Simple microservice that handle authentication related endpoints in an e-commerce app
 
-You can have un-authorized routes.
+## :toolbox: Stack
 
-```
-$ curl http://localhost:8080/unauthorized
-$ # result -> true
-```
+- TypeScript
+- Nest JS
+- R2DBC
+- Postgres
 
-Trying authorized routes without a JWT will result in a 401.
+## :sparkles: Features
 
-```
-$ curl http://localhost:8080/authorized
-$ # result -> {"statusCode":401,"message":"Unauthorized"}                                 
-```
+- REST API using NestJS
+- JWT authentication
+- TODO:
+  - CI/CD
+  - Test Coverage
 
-Use the `/auth/login` route to login.
+---
 
-```
-$ # POST /auth/login
-$ curl -X POST http://localhost:8080/auth/login -d '{"username": "maria", "password": "123"}' -H "Content-Type: application/json"
-$ # result -> {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm... }
-```
+## :rocket: Running the app
 
-Send the JWT to authorized routes using the `Authorization` header and prefixing the JWT with `Bearer `.
+- Requirements:
+  - Node (v14+)
+  - Postgres
+  - pgAdmin4 (optional)
 
-```
-$ # GET /profile using access_token returned from previous step as bearer code
-$ curl http://localhost:8080/authorized -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm..."
-$ # result -> {"userId":2}
+___
+
+### Develop
+
+1. First, copy the `.env.example` in the root dir of the project and rename it to `.env` . Inside it you will find the environment variables necessary to the project run, so you will need to change the values accordingly.
+
+2. Now, with pgAdmin or using the command line, create a Database (the name is up to you) and update the `DB_NAME` value with the name you have chose. Update the rest of the variables according to your database configuration and credentials.
+
+3. Install the dependencies with: `yarn install` or `npm install`;
+
+4. Generate prisma client:
+    ```
+    $ npx prisma generate
+    ```
+
+5. Apply prisma migrations to your database:
+    ```
+    $ npx prisma migrate deploy
+    ```
+
+5. Start the server:
+    ```
+    $ yarn start:dev
+    ```
+
+___
+
+### Production
+
+Run via Docker 🐳:
+
+```shell
+docker-compose up server
 ```
