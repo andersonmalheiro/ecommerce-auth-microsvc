@@ -1,11 +1,11 @@
+import { Prisma } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
 import { UserAuth } from '@prisma/client';
+import { compareSync, genSalt, hash } from 'bcrypt';
 import { IRegisterUserDTO } from 'dto/register-user.dto';
-import { Prisma } from '.prisma/client';
-import { hash, genSalt, compareSync } from 'bcrypt';
 import { UpdatePasswordDTO } from 'dto/update-password.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -71,8 +71,6 @@ export class AuthService {
 
     const salt = await genSalt(this.saltRounds);
     const hashedPass = await hash(password, salt);
-
-    console.log(hashedPass);
 
     const payload: Prisma.UserAuthUpdateInput = {
       password: hashedPass,

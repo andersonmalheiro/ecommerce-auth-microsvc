@@ -21,8 +21,6 @@ export class AuthController {
         return response.status(HttpStatus.OK).send(token);
       }
     } catch (error) {
-      console.log(error);
-
       return response.status(HttpStatus.BAD_REQUEST).json({
         msg: error.message,
       });
