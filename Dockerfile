@@ -7,6 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY yarn.lock ./
 COPY prisma ./prisma/
+COPY config/db/init.sql /docker-entrypoint-initdb.d/
 
 # Install app dependencies
 RUN npm install
