@@ -15,7 +15,7 @@ import { Request } from 'express';
 import { JwtAuthGuard } from 'services/auth/jwt-auth.guard';
 import { UserService } from '../services/users/users.service';
 
-@Controller('users')
+@Controller()
 export class UserController {
   constructor(private userService: UserService) {}
 

@@ -2,9 +2,10 @@ import { Prisma } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserAuth } from '@prisma/client';
-import { compareSync, genSalt, hash } from 'bcrypt';
-import { IRegisterUserDTO } from 'dto/register-user.dto';
+import { compareSync } from 'bcrypt';
+import { RegisterUserDTO } from 'dto/register-user.dto';
 import { UpdatePasswordDTO } from 'dto/update-password.dto';
+import hashPassword from 'util/encryption/hash-password';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -35,11 +36,13 @@ export class AuthService {
         },
       });
 
-      const token = this.jwtService.sign({ userId: user.id });
+      if (user) {
+        const token = this.jwtService.sign({ userId: user.id });
 
-      return {
-        access_token: token,
-      };
+        return {
+          access_token: token,
+        };
+      }
     } else {
       throw new Error(`Invalid email`);
     }
@@ -47,18 +50,17 @@ export class AuthService {
     return null;
   }
 
-  public async register(data: IRegisterUserDTO) {
+  public async register(data: RegisterUserDTO) {
     const { email, name, password } = data;
 
-    const salt = await genSalt(this.saltRounds);
-    const hashedPass = await hash(password, salt);
+    const hash = await hashPassword(this.saltRounds, password);
 
     const payload: Prisma.UserCreateInput = {
       name,
       auth: {
         create: {
           email,
-          password: hashedPass,
+          password: hash,
         },
       },
     };
@@ -69,11 +71,10 @@ export class AuthService {
   public async updatePassword(data: UpdatePasswordDTO) {
     const { email, password } = data;
 
-    const salt = await genSalt(this.saltRounds);
-    const hashedPass = await hash(password, salt);
+    const hash = await hashPassword(this.saltRounds, password);
 
     const payload: Prisma.UserAuthUpdateInput = {
-      password: hashedPass,
+      password: hash,
     };
 
     await this.prisma.userAuth.update({

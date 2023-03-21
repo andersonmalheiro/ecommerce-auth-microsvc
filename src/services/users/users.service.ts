@@ -22,6 +22,9 @@ export class UserService {
       where: {
         id: id,
       },
+      include: {
+        address: true,
+      },
     });
   }
 
@@ -35,7 +38,7 @@ export class UserService {
     Object.entries(rest).map(([key, value]) => {
       if (value) {
         if (['skip', 'take'].includes(key)) {
-          filters[key] = parseInt(value);
+          filters[key] = parseInt(value as string);
         } else {
           filters[key] = value;
         }
