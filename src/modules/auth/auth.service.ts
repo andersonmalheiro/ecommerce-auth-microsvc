@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserAuth } from '@prisma/client';
 import { compareSync } from 'bcrypt';
-import { RegisterUserDTO } from 'dto/register-user.dto';
-import { UpdatePasswordDTO } from 'dto/update-password.dto';
+import { UpdatePasswordDTO } from 'modules/auth/dto/update-password.dto';
 import hashPassword from 'util/encryption/hash-password';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from 'modules/prisma/prisma.service';
+import { RegisterUserDTO } from './dto/register-user.dto';
 
 @Injectable()
 export class AuthService {

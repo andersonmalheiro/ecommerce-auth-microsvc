@@ -1,18 +1,11 @@
-import {
-  Controller,
-  Get,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import { JwtAuthGuard } from '../../services/auth/jwt-auth.guard';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'modules/auth/jwt-auth.guard';
 
 @Controller('authorized')
 export class AuthorizedController {
-  constructor() {}
-
   @Get()
   @UseGuards(JwtAuthGuard)
-  async index(@Request() req): Promise<{userId: number}> {
+  async index(@Request() req): Promise<{ userId: number }> {
     return { userId: req.user.userId };
   }
 }

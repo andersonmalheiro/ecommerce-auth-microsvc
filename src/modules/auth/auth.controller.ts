@@ -1,10 +1,10 @@
 import { Prisma } from '.prisma/client';
 import { Body, Controller, HttpStatus, Patch, Post, Res } from '@nestjs/common';
-import { RegisterUserDTO, RegisterUserSchema } from 'dto/register-user.dto';
-import { UpdatePasswordDTO } from 'dto/update-password.dto';
+import { RegisterUserDTO, RegisterUserSchema } from './dto/register-user.dto';
+import { UpdatePasswordDTO } from 'modules/auth/dto/update-password.dto';
 import { Response } from 'express';
 import { ZodError } from 'zod';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from './auth.service';
 
 @Controller()
 export class AuthController {

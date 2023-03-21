@@ -13,9 +13,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'services/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'modules/auth/jwt-auth.guard';
 import errorHandler from 'util/error/error-handler';
-import { AddressService } from '../services/address/address.service';
+import { AddressService } from './address.service';
 
 @Controller()
 export class AddressController {

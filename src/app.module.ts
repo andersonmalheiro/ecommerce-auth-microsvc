@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
-import { AuthorizedModule } from './modules/authorized/authorized.module';
-import { UnauthorizedModule } from './modules/unauthorized/unauthorized.module';
-import { AuthModule } from './services/auth/auth.module';
 import { RouterModule } from '@nestjs/core';
-import { UsersModule } from 'services/users/users.module';
-import { AddressModule } from 'services/address/address.module';
+import { AddressModule } from 'modules/address';
+import { AuthModule } from 'modules/auth';
+import { UsersModule } from 'modules/users';
+import { AuthorizedModule } from './modules/authorized';
+import { UnauthorizedModule } from './modules/unauthorized';
 
 @Module({
   providers: [],
