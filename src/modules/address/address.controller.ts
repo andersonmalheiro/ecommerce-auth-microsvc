@@ -42,7 +42,10 @@ export class AddressController {
     @Res() response: Response,
   ) {
     try {
-      return this.addressService.create(data, parseInt(userId));
+      const res = await this.addressService.create(data, parseInt(userId));
+      if (res) {
+        return response.status(HttpStatus.CREATED).send(res);
+      }
     } catch (error) {
       errorHandler(error, response);
     }
