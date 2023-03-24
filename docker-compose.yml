@@ -13,7 +13,7 @@ services:
       - /var/lib/postgresql/data
 
   server:
-    image: server
+    build: .
     environment:
       NODE_ENV: "production"
       DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=${DB_SCHEMA}"
