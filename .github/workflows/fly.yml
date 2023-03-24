@@ -17,8 +17,27 @@ jobs:
       - name: Github checkout
         uses: actions/checkout@v3
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: Setup Fly.io config
         uses: superfly/flyctl-actions/setup-flyctl@master
 
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: ESLint
+        run: yarn lint
+
+      - name: Build project
+        run: yarn build
+
+      - name: Generate prisma client
+        run: yarn prisma:generate
+
+      - name: Apply prisma migrations
+        run: yarn prisma:migrate
+
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only
+        run: flyctl deploy --remote-only --no-cache
