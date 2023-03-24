@@ -1,4 +1,6 @@
-FROM node:14-alpine AS builder
+FROM node:18-alpine AS builder
+
+ENV DATABASE_URL=${DATABASE_URL}
 
 # Create app directory
 WORKDIR /app
@@ -18,11 +20,13 @@ COPY . .
 
 RUN npm run build
 
-FROM node:14-alpine
+FROM node:18-alpine
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/yarn.lock ./
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
 
 RUN npm run prisma:migrate
 
