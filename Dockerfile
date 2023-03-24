@@ -12,7 +12,7 @@ COPY config/db/init.sql /docker-entrypoint-initdb.d/
 # Install app dependencies
 RUN npm install
 
-RUN npx prisma generate
+RUN npm run prisma:generate
 
 COPY . .
 
@@ -23,6 +23,8 @@ FROM node:14-alpine
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
+
+RUN npm run prisma:migrate
 
 EXPOSE 8080
 CMD [ "npm", "run", "start:prod" ]
