@@ -2,6 +2,8 @@ FROM node:18-alpine AS builder
 
 ENV DATABASE_URL=${DATABASE_URL}
 
+RUN echo $DATABASE_URL
+
 # Create app directory
 WORKDIR /app
 
